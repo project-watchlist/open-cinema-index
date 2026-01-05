@@ -50,7 +50,7 @@ OCI ships with two preconfigured sources:
 - **tmdb** — REST (`https://api.themoviedb.org/3`), seeded with a safe 40-requests-per-10-seconds limit (matching historical official limits).
 - **wikidata** — REST (`https://query.wikidata.org/sparql`), seeded with a 1-request-per-1-second limit (matching WDQS usage policy).
 
-You can adjust limits, capabilities, refresh policies, credentials, or disable them by editing the corresponding rows after running migrations.
+You can adjust limits, [capabilities, refresh policies](docs/data-sources.md), credentials, or disable them by editing the corresponding rows after running migrations.
 
 ### Normalize
 
@@ -72,7 +72,7 @@ Emits the indexed data in formats suitable for downstream systems.
 
 Every piece of data stored by OCI is associated with:
 
-- a source
+- a source (see [Data Sources](docs/data-sources.md))
 - a fetch timestamp
 - an optional confidence level
 

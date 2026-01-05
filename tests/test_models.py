@@ -219,11 +219,35 @@ def test_data_source_capability_unique(session):
     session.add(source)
     session.commit()
 
-    cap1 = DataSourceCapability(data_source_id=source.id, capability="films")
+    cap1 = DataSourceCapability(
+        data_source_id=source.id,
+        capability="films",
+        payload_mapping='{"title": "name"}'
+    )
     cap2 = DataSourceCapability(data_source_id=source.id, capability="films")
     session.add_all([cap1, cap2])
     with pytest.raises(IntegrityError):
         session.commit()
+
+    session.rollback()
+    
+    saved_cap = session.query(DataSourceCapability).filter_by(data_source_id=source.id, capability="films").first()
+    if saved_cap:
+        # This part depends on if cap1 was added before exception
+        # But actually IntegrityError happens at commit.
+        pass
+    
+    # Test saving and reading payload_mapping
+    cap3 = DataSourceCapability(
+        data_source_id=source.id,
+        capability="people",
+        payload_mapping='{"name": "fullname"}'
+    )
+    session.add(cap3)
+    session.commit()
+    
+    fetched = session.query(DataSourceCapability).filter_by(data_source_id=source.id, capability="people").one()
+    assert fetched.payload_mapping == '{"name": "fullname"}'
 
 
 def test_data_source_credential_expiry_and_uniqueness(session):
