@@ -244,6 +244,7 @@ class DataSourceRefreshPolicy(Base):
     max_record_age_days = Column(Integer, nullable=True)
     incremental_cursor_field = Column(String, nullable=True)
     supports_webhook = Column(Boolean, default=False)
+    supports_etags = Column(Boolean, default=False)
 
     __table_args__ = (UniqueConstraint("data_source_id", name="uq_data_source_refresh_policy_unique"),)
 

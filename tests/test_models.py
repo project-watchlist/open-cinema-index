@@ -340,3 +340,19 @@ def test_data_source_run_records(session):
 
     saved_run = session.query(DataSourceRun).filter_by(data_source_id=source.id).one()
     assert saved_run.status == "success"
+
+def test_data_source_refresh_policy_etags(session):
+    source = DataSource(name="etag_test")
+    session.add(source)
+    session.commit()
+
+    policy = DataSourceRefreshPolicy(
+        data_source_id=source.id,
+        default_refresh_interval_minutes=60,
+        supports_etags=True
+    )
+    session.add(policy)
+    session.commit()
+
+    fetched = session.query(DataSourceRefreshPolicy).filter_by(data_source_id=source.id).one()
+    assert fetched.supports_etags is True

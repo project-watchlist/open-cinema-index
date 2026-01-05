@@ -56,6 +56,7 @@ The `DataSourceRefreshPolicy` determines how often data from a source should be 
 - **max_record_age_days**: The maximum age a record can reach before it is considered stale, regardless of the refresh interval.
 - **incremental_cursor_field**: The field used to track progress during incremental ingestion (e.g., a timestamp or an ID).
 - **supports_webhook**: Indicates if the source can push updates to OCI via webhooks.
+- **supports_etags**: Indicates if the source supports HTTP ETags for conditional requests.
 
 ## Rate Limits
 
@@ -78,6 +79,15 @@ Despite proactive rate limiting, external APIs may still return HTTP `429 Too Ma
 2.  **Configured Fallback**: If no `Retry-After` header is present, OCI uses the `retry_delay_seconds` defined in the `DataSourceRateLimit` configuration.
 3.  **Exponential Backoff**: For repeated 429 errors within the same run, OCI applies an exponential backoff by multiplying the current delay by the `backoff_multiplier` for each subsequent retry.
 4.  **Run Failure**: If the number of retries exceeds the `max_retries` threshold or the wait time becomes excessive, the `DataSourceRun` is marked as `failed` with the 429 error logged.
+
+### Conditional Requests (ETags)
+
+When a data source has `supports_etags` enabled, OCI uses the `ETag` and `If-None-Match` HTTP headers to reduce unnecessary data transfer:
+
+1.  **Storage**: OCI stores the `ETag` returned by the source for each fetched resource.
+2.  **Conditional Fetch**: On subsequent requests for the same resource, OCI includes the stored ETag in the `If-None-Match` header.
+3.  **304 Not Modified**: If the server returns an HTTP `304 Not Modified`, OCI skips the normalization and enrichment phases for that record, as the data is already up-to-date in the index.
+4.  **Update**: If the server returns a `200 OK` with a new `ETag`, OCI processes the new data and updates the stored ETag.
 
 ## Runs
 
