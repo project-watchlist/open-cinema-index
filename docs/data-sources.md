@@ -65,8 +65,19 @@ To be a good citizen of the web and avoid being blocked, OCI strictly adheres to
 - **max_calls**: The maximum number of requests allowed within the window.
 - **burst**: The number of requests allowed in a single burst, even if it exceeds the average rate momentarily.
 - **retry_delay_seconds**: How long to wait before retrying if a rate limit is hit.
+- **max_retries**: The maximum number of attempts to retry a failed request before giving up.
+- **backoff_multiplier**: The factor by which the retry delay is multiplied for each subsequent attempt (e.g., a value of 2 with a 5s delay results in 5s, 10s, 20s).
 
 Multiple rate limits can be applied to a single source (e.g., 40 requests per 10 seconds AND 10,000 requests per day).
+
+### Handling 429 Responses
+
+Despite proactive rate limiting, external APIs may still return HTTP `429 Too Many Requests` responses. OCI handles these using a "Backoff and Retry" strategy:
+
+1.  **Respect `Retry-After`**: If the response includes a `Retry-After` header, OCI will wait for the duration specified by the server before attempting any further requests to that source.
+2.  **Configured Fallback**: If no `Retry-After` header is present, OCI uses the `retry_delay_seconds` defined in the `DataSourceRateLimit` configuration.
+3.  **Exponential Backoff**: For repeated 429 errors within the same run, OCI applies an exponential backoff by multiplying the current delay by the `backoff_multiplier` for each subsequent retry.
+4.  **Run Failure**: If the number of retries exceeds the `max_retries` threshold or the wait time becomes excessive, the `DataSourceRun` is marked as `failed` with the 429 error logged.
 
 ## Runs
 

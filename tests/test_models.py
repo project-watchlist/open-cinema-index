@@ -287,6 +287,26 @@ def test_data_source_rate_limit_unique_window(session):
         session.commit()
 
 
+def test_data_source_rate_limit_retry_config(session):
+    source = DataSource(name="retry_test")
+    session.add(source)
+    session.commit()
+
+    limit = DataSourceRateLimit(
+        data_source_id=source.id,
+        window_seconds=60,
+        max_calls=10,
+        max_retries=5,
+        backoff_multiplier=3
+    )
+    session.add(limit)
+    session.commit()
+
+    fetched = session.query(DataSourceRateLimit).filter_by(data_source_id=source.id).one()
+    assert fetched.max_retries == 5
+    assert fetched.backoff_multiplier == 3
+
+
 def test_data_source_refresh_policy_one_to_one(session):
     source = DataSource(name="festival")
     session.add(source)

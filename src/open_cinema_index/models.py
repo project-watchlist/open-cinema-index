@@ -227,6 +227,8 @@ class DataSourceRateLimit(Base):
     max_calls = Column(Integer, nullable=False)
     burst = Column(Integer, nullable=True)
     retry_delay_seconds = Column(Integer, nullable=True)
+    max_retries = Column(Integer, default=3)
+    backoff_multiplier = Column(Integer, default=2)
 
     __table_args__ = (UniqueConstraint("data_source_id", "window_seconds", name="uq_data_source_rate_limit_window"),)
 
