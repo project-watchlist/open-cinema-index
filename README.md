@@ -97,6 +97,6 @@ OCI exists to preserve the richness of cinema history without pretending it's ti
 
 Open Cinema Index is under active development.
 
-The schema and CLI are expected to evolve.
+The schema and CLI are expected to evolve. Detailed CLI instructions can be found in the [CLI Usage Guide](docs/cli.md).
 
 Contributions are welcome, especially those that respect the project's archival philosophy.

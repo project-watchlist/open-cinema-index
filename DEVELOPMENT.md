@@ -72,4 +72,5 @@ Testing is highly recommended for validating model relationships and ensuring da
 
 Detailed documentation on specific components:
 
+- [CLI Usage Guide](docs/cli.md)
 - [Data Sources, Capabilities, Refresh Policies, Rate Limits, and Runs](docs/data-sources.md)

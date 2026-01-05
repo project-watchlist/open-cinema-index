@@ -20,6 +20,9 @@ dev = [
     "ruff",
 ]
 
+[project.scripts]
+oci = "open_cinema_index.cli:app"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
