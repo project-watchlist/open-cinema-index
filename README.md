@@ -29,6 +29,8 @@ Rather than flattening every into a single record, OCI keeps track of:
 
 Ambiguity is preserved, not "cleaned up".
 
+See the [Film Schema](docs/film-schema.md) for more details.
+
 ## The Ingestion Pipeline
 
 OCI is structured as a pipeline of explicit, repeatable steps:
@@ -54,7 +56,7 @@ You can adjust limits, [capabilities, refresh policies](docs/data-sources.md), c
 
 ### Normalize
 
-Maps raw data into OCI's canonical schema.
+Maps raw data into OCI's [canonical schema](docs/film-schema.md).
 
 ### Resolve
 
